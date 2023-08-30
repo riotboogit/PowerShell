@@ -1,0 +1,8 @@
+#Work in progress reading a json file and importing into SQL Server
+#Open json file 
+#Mock file created with Mockeroo
+$testFile = "C:\work\json\users_mock.json"
+
+Write-Warning  $testFile 
+$parsedresult = Get-Content -Path $testFile | ConvertFrom-Json
+Write-Output $parsedresult
