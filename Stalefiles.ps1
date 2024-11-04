@@ -1,7 +1,7 @@
 #script to delete older files based on configuration setting
 param(
     [string] $MaterFileParam = '\\server\folder\DeleteMasterListTest.csv', #use default value for config file   
-    [string] $DefaultLogPathParam = 'server\folder]Delete\AutomateDeleteLog.txt'  #default log location                             
+    [string] $DefaultLogPathParam = '\\server\folder]Delete\AutomateDeleteLog.txt'  #default log location                             
 )
 
 
