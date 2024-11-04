@@ -13,7 +13,7 @@ $ContinueEx = 'TRUE'
 #start logging
 $CurrentDate = Get-Date -Format "yyyyMMdd_HHmmss"
 
-#Default log location in BITS folder will change to tidal server after testing
+#Default log location in BITS folder will change to job scheduler server after testing
 if (-not(Test-Path -path $DeleteLogPath)) {
     New-Item -Path $DeleteLogPath -ItemType File
     $msg = "start delete list processing " + $MasterFile + " " + $CurrentDate
