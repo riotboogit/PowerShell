@@ -11,14 +11,14 @@ try
     $runDate = $runDate.AddDays(-1)
     $fileDate = $runDate.ToString("u")
     $fileDate = $fileDate -replace "-", ''
-	  $fileNameBase = "GLXXXX_"
-	  $fileName = $fileNameBase + $fileDate
+    $fileNameBase = "GLXXXX_"
+    $fileName = $fileNameBase + $fileDate
     $fileName = $fileName.Substring(0,15)
     $fileName = $fileName + '.csv'
     Write-Host $fileName
 	
 	
-    # Load WinSCP .NET assembly -- verify path on tidal server 
+    # Load WinSCP .NET assembly -- verify path on server 
     Add-Type -Path "C:\Program Files (x86)\WinSCP\WinSCPnet.dll" 
 
     # Setup session options
