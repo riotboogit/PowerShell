@@ -27,7 +27,7 @@ if ((Test-Path -Path $destFile) -eq $true ) {
     Write-Warning "Starting excel import"
 
     #import and export filtering out rows with a blank counter value and add start/end row and start/end column
-    Import-Excel -Path $srcFile -WorkSheetname 'All Deals' -NoHeader -StartRow 9 -StartColumn 3 -EndColumn 62 |
+    Import-Excel -Path $srcFile -WorkSheetname 'All Data' -NoHeader -StartRow 9 -StartColumn 3 -EndColumn 62 |
     Export-Csv -Path $destFile -Delimiter ',' -NoTypeInformation  -Force    
     
     #no idea why it addes "P" columns as headers so re-import with defined headers
