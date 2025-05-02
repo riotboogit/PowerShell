@@ -14,8 +14,8 @@ Add-Type -AssemblyName "System.Data"
 #region 
 #$strRegion = 'Florida Region'
 $configFile = 'C:\work\FloridaProperties.csv'
-#$searchFile = 'C:\work\bizunit.props'
-#$outFile = 'C:\work\bizunitout.props'
+#$searchFile = 'C:\work\biz.props'
+#$outFile = 'C:\work\out.props'
 
 $key
 #db information 
