@@ -17,7 +17,6 @@ $configFile = 'C:\work\FloridaProperties.csv'
 #$searchFile = 'C:\work\bizunit.props'
 #$outFile = 'C:\work\bizunitout.props'
 
-$allFlProps
 $key
 #db information 
 #dev
