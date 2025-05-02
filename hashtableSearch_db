@@ -1,0 +1,110 @@
+#script to find a certain region properties and remove them from the props file used by the orchestrator
+#gets the region info from sql database
+#props file is a hashtable
+#now with params
+param(
+    [string] $strRegion= 'Florida Region', #region search  
+    [string] $searchFile = 'C:\work\biz.props',
+    [string] $outFile = 'C:\work\out.props'  
+                             
+)
+
+Add-Type -AssemblyName "System.Data"
+
+#region 
+#$strRegion = 'Florida Region'
+$configFile = 'C:\work\FloridaProperties.csv'
+#$searchFile = 'C:\work\bizunit.props'
+#$outFile = 'C:\work\bizunitout.props'
+
+$allFlProps
+$key
+#db information 
+#dev
+#prod
+$strConn = “Server=123-SQL-SVRXXX\;Integrated Security=true;Initial Catalog=My_source_data” 
+
+#dbconnection
+$sqlConn = New-Object System.Data.SqlClient.SqlConnection
+$sqlConn.ConnectionString = $strConn
+$sqlConn.Open()
+#Write-Warning "db connected"
+ 
+ $sqlcmd = $sqlConn.CreateCommand()
+ <# or #>
+ $sqlCmd = New-Object System.Data.SqlClient.SqlCommand
+ $sqlCmd.Connection = $sqlConn
+ $query = “Select PropID from [dbo].[vw_RegionsProperties] where Region = '"+ $strRegion + "'; ”
+ $sqlCmd.CommandText = $query
+ Write-Output $query
+ 
+ #SQL Adapter - get the results using the SQL Command
+$sqlAdapter = new-object System.Data.SqlClient.SqlDataAdapter 
+$sqlAdapter.SelectCommand = $sqlCmd
+$dataTable = New-Object System.Data.DataTable
+$sqlAdapter.Fill($dataTable)
+
+# Output the DataTable
+$dataTable | Format-Table -AutoSize
+
+#Close SQL Connection
+$sqlConn.Close()
+
+#Get single table from dataset
+$allFlProps = $dataTable.Tables[0]
+
+#array to hold keys to remove
+$keysToRemove =@()
+
+#hashtable to hold bizunit.props data- 
+$bizUnits = @{}
+
+Get-Content -Path $searchFile |Select-Object -Skip 1 | ForEach-Object{
+        # Split each line into key and value assuming they are separated by a delimiter, e.g., '='
+        $parts = $_ -split '='
+        if ($parts.Length -eq 2) {
+            $key = $parts[0].Trim()
+            $value = $parts[1].Trim()
+            # Add to the hashtable
+            $bizUnits[$key] = $value
+        }
+}
+#print hashtable
+#$bizUnits
+
+#load properties file (from JD source)
+#$allFlProps = Import-Csv -Path $configFile
+
+#probably a more efficient way couldn't get the remove-keys to work in the loop
+foreach ($row in $dataTable){
+    $csvKey = $row.'PropID'
+    $csvKey = $csvKey.Trim()
+
+
+    # search the hashtable for the value
+    $enumerator =  $bizUnits.GetEnumerator()
+    # Iterate through the hashtable
+    foreach ($entry in $enumerator) {
+    #Write-Host "Key: $($entry.Key), Value: $($entry.Value)"
+    if ($entry.Key -eq $csvKey){
+        #matches add to remove array
+        $keysToRemove += $csvKey
+    }
+}   
+
+}#end prop file processing
+#remove from hashtable
+$keysToRemove | ForEach-Object { $bizUnits.Remove($_) }
+
+# Convert updated hashtable to key-value pairs for file export
+$cleanBizUnit = $bizUnits.GetEnumerator() | ForEach-Object {
+    "$($_.Key)=$($_.Value)"
+}
+
+#insert the header to new bizunit file
+$headerString = '### ALL UR Databases R Belong 2 US.  ###'
+Add-Content -Path $outFile -Value $headerString
+
+$cleanBizUnit | out-file -FilePath $outFile -Append
+
+
