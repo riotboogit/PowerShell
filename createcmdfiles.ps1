@@ -16,7 +16,7 @@ if(test-path -Path $MasterFile){
         $CmdFile =  $row.'FilePath'
         $ExePath = $CmdFile
         #clean up file name from path
-        $CmdFileName = $CmdFile.Replace('\\eanas\', '')
+        $CmdFileName = $CmdFile.Replace('\\serverroot\', '')
         $CmdFileName = $CmdFileName.Replace('\', '_')
         $CmdFileName = $CmdFileName.Replace(' ', '')
         #create a new cmd file 
